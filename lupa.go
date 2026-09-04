@@ -1,3 +1,5 @@
+// go build -o lupa
+
 package main
 
 import (
@@ -98,7 +100,7 @@ func main() {
 
 func usage() {
 	fmt.Fprintf(os.Stderr, `Usage:
-  ctx [path] [options]
+  lupa [path] [options]
 
 Options:
   --depth <n>             Maximum directory depth
@@ -108,11 +110,11 @@ Options:
   --summary               Show summaries without file contents
 
 Examples:
-  ctx .
-  ctx ./src --depth 4
-  ctx . --exclude node_modules --exclude .git
-  ctx . --include "*.py"
-  ctx . --summary
+  lupa .
+  lupa ./src --depth 4
+  lupa . --exclude node_modules --exclude .git
+  lupa . --include "*.py"
+  lupa . --summary
 `)
 }
 
@@ -275,13 +277,25 @@ func printFile(file File, config Config) {
 
 	fmt.Println(colorize(summary, Cyan, config.NoColor))
 
-	fmt.Printf("PATH: %s\n", file.Path)
+	fmt.Println(colorize(
+	fmt.Sprintf("PATH: %s", file.Path),
+		Magenta,
+		config.NoColor,
+	))
 
 	if !file.Binary {
-		fmt.Printf("LINES: %d\n", file.Lines)
+		fmt.Println(colorize(
+			fmt.Sprintf("LINES: %d", file.Lines),
+			Magenta,
+			config.NoColor,
+		))
 	}
 
-	fmt.Printf("SIZE: %s\n", formatSize(file.Size))
+	fmt.Println(colorize(
+		fmt.Sprintf("SIZE: %s", formatSize(file.Size)),
+		Magenta,
+		config.NoColor,
+	))
 
 	if config.Summary {
 		fmt.Println()
@@ -453,6 +467,7 @@ func printSectionHeader(title string, config Config) {
 const (
 	Reset = "\033[0m"
 	Cyan  = "\033[36m"
+	Magenta = "\033[35m"
 	Dim   = "\033[2m"
 	Red   = "\033[31m"
 )
